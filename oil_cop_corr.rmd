@@ -1,0 +1,12 @@
+---
+title: "Correlation of International Oil Prices and Colombian Peso Forex"
+author: "Ariel E. Meilij"
+date: "September 8, 2015"
+output: html_document
+---
+
+## ABSTRACT
+The following analysis uses simple Data Science techniques to explore, analyze, and measure the relationship between the drop of international oil prices and the steep devaluation of the Colombian Peso against the US dollar between the months of September 2014 and October 2015.
+
+It has been a known fact by economist that such a relationship always existed since oil exports represent a large percentage of Colombian GDP. But the exact analysis and correlation of variables is little known. 
+
