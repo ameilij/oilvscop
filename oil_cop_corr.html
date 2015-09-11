@@ -115,6 +115,22 @@ library(Hmisc)</code></pre>
 ## The following objects are masked from 'package:base':
 ## 
 ##     format.pval, round.POSIXt, trunc.POSIXt, units</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## Warning: package 'dplyr' was built under R version 3.1.3</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:Hmisc':
+## 
+##     combine, src, summarize
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>#setwd(&quot;/home/user/project/main&quot;)
 oilvscop = read.csv(&quot;oilvscop_wti_brent_numeric.csv&quot;)
 oilvscop$date &lt;- as.Date(oilvscop$date, origin = &quot;1899-12-30&quot;)</code></pre>
@@ -244,6 +260,8 @@ fit</code></pre>
 <p>Given the availability of such incredible tools for mathematical analysis and prediction, coupled to the also available wealth of data floating freely in the Internet which makes gathering and exploring large sets of data a much simpler task, one is left to wonder if the Colombian government carefully studied the potential case for correlation of oil prices and the TRM, and the resulting inflation effect on the market and subsequent loss of purchasing power from the consumer.</p>
 <p>We have shown the existance of a strong correlation between variables, so if the devaluation of the Colombian peso continues, it is not outrageous to think this is not by free design, but rather because policy makers have in mind a bigger plan that involves no intervention to the free flotation of the US dollar.</p>
 <p>It is unlikely that the price of oil sees significant increases, not at least in the short term, with the looming threat of fracking techniques just around the corner to estabilize prices (usually towards the lower boundary.) Unless a new variable comes to play, for example a significant replacement for GDP income, the peso will continue to lose parity power against the US dollar, and the emergence of double-digit inflation, could very well be the result for a nation well-used to the availability of imported goods.</p>
+<p><strong>The following work is solely based for academic purposes and no claims are made as to the accuracy of the mathematical methods within.</strong></p>
+<p>Panama Republic, September 2015 | www.rpubs.com/ameilij | Realeased under Attribution-NonCommercial 3.0 Unported - Creative Commons</p>
 </div>
 
 

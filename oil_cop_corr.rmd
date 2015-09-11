@@ -1,12 +1,161 @@
 ---
-title: "Correlation of International Oil Prices and Colombian Peso Forex"
+title: "Correlation of International Oil Prices and Colombian Peso TRM"
 author: "Ariel E. Meilij"
 date: "September 8, 2015"
 output: html_document
 ---
 
-## ABSTRACT
+### ABSTRACT
 The following analysis uses simple Data Science techniques to explore, analyze, and measure the relationship between the drop of international oil prices and the steep devaluation of the Colombian Peso against the US dollar between the months of September 2014 and October 2015.
 
 It has been a known fact by economist that such a relationship always existed since oil exports represent a large percentage of Colombian GDP. But the exact analysis and correlation of variables is little known. 
 
+### INTRODUCTION
+It was in August of 2014 that I first heard from several executives of the Colombian oil industry that the new techniques in fracking and the lower cost of shale oil drilling would have a tremendous impact on the capacity of the national oil industry to generate sales, thus kick starting the devaluation of the Colombian peso in lieu of the smaller influx of US dollars into the national reserves. 
+
+Despite having this knowledge, and despite warning many of my customers in the shoe industry, no one really saw the devaluation coming until the first days of February. Why? The US dollar usually had its peaks around the vacation period compromised between the second half of December and the third week of January. Used to years of a relatively cheap dollar currency, Colombian families would spend the year-end outside their country and demand a bigger quantity of US currency, only to return before February, when the peak would quiet and the Forex would return to normal. 
+
+But the currency exchange rate never returned to normal. Without the standard income from oil sales now affected by lower prices from shale oil and excess of reserves, Colombian traders began to find aggregate demand for US dollars in a market where the American currency began to grow scarce.
+
+For the athletic shoe industry this effect had negative implications. Customers who purchased and shipped goods prior to November 2014 and the Christmas season, began defaulting payments. Most of them had worked their cost accounting based on a US dollar trading between 1,850 to 1,900 pesos. When the debts matured around January and February 2015, customers preferred to speculate and default, with the intent of avoiding an exchange rate of COP 2,150 and working some sort of payment agreement when the exchanged declined. The exchange never declined, as the Colombian peso continued to devaluate in free fall. The Colombian government - anxious to please national exporters of coffee and other raw materials - purposely stated that would use no national reserves to avoid the exchange rate ascension. For President's Santos cash-strapped office, a higher currency exchange rate also meant more Colombian pesos per barrel of oil to meet an ever-increasing agenda of social and infrastructure programs. Up to date, the State has kept the same monetary policy position. 
+
+The athletic shoe industry took a severe impact from decreasing product importation into Colombia. Because of the Colombian peso devaluation, price adjusted goods now suffered a price increase relatively equivalent to the rise of the US dollar. When the devaluation reached the 50% mark, shoes were re-liquidated at the new currency level with price increments that were above what the consumer was used - or prepared - to pay. Some analyst predict that inflation will force the Colombian government to adjust minimum wages to compensate for consumers losing purchasing power. But political analysts doubt the amount of minimum wage adjustments will be even close to the level of devaluation and inflation of imported goods. 
+
+### MEASURING CORRELATION OF INTERNATIONAL OIL PRICES TO THE EXCHANGE RATE OF THE COLOMBIAN PESO
+
+Everybody in the industry had a rough idea of the relationship between falling international oil prices and the currency peg. But nobody in the industry had actually measured mathematically said relationship, let alone establish some sort of predictive model to estimate future pricing of the Colombian Peso. The need to correctly measure such relationship corresponded to defend the position of our particular industry of reducing offer in light of diminishing demand. If the strategy would seem rather obvious, as in all things corporate, such reduction of offer would negatively affect volume forecasts for the years 2015 through 2017, something all executives were trying to avoid even if that meant refuting all but the most strict and mathematically based model. 
+
+## Creating a Data Set for Measuring the Correlation
+
+It is estimated that 70% to 80% of a time spent by a Data Science is wrangling and cleaning data. This small essay is probably the purest proof to such statement. Finding accurate and readily available data for the daily quotes of WTI and Brent oil was rather simple. Finding historical and accurate information for the official exchange rate of the US dollar in Colombian Pesos was a little more complicated but not so strenuously so that it couldn't be achieved in a few Google searches. Putting all the information together in a simple file format that could be easily manipulated in R was probably the only hard part of the exercise. Each data source had its preferred date format, and for some strange reason none coincided. The solution was to web scrape the information from several pages, clean them in Excel, and build one unique table using vertical look-up formulas to later export to CSV format. 
+
+The price of the US dollar in Colombian Pesos is known as the TRM (Tasa de Referencia Bancaria or Banking Reference Rate). After some data wrangling, the final file had precise and accurate information on daily quotes of the WTI, Brent and corresponding TRM. If the relationship truly existed, it would be easy to detect and visualize from the resulting data set. 
+
+Two different oil prices were used for the exercise: WTI and Brent.
+
+* WTI: Light Sweet Crude Oil (WTI) futures and options are the world's most actively traded energy product. WTI plays an important role in managing risk in the energy sector worldwide because the contract has the: most liquidity, most customers, most transparency
+* Brent: Brent Crude is a major trading classification of sweet light crude oil that serves as a major benchmark price for purchases of oil worldwide.
+
+## Reading and Preparing the Data Set
+The first step towards the explorative data analysis of the information was reading the required libraries for the analysis and studying the different vectors of the data set to get an idea of each particular behavior.
+
+```{r}
+library(ggplot2)
+library(reshape2)
+library(Hmisc)
+library(dplyr)
+
+#setwd("/home/user/project/main")
+oilvscop = read.csv("oilvscop_wti_brent_numeric.csv")
+oilvscop$date <- as.Date(oilvscop$date, origin = "1899-12-30")
+```
+
+It was mentioned before that the date values were probably the hardest part of putting together the data set. Information on quotes was scrapped from websites, and the resulting date formats did not play together well. A plethora of visualizations made little sense and the resulting charts were counter intuitive to the trained eye until the dates were finally corrected. The author found the best way to normalize dates was to export to Excel and then cast the dates into simple numeric format (i.e. turn 2014-09-01 to 41,883.) When exported to numeric format in such a way, it's much easier to read the file into an R data-frame with the syntax `oilvscop$date <- as.Date(oilvscop$date, origin = "1899-12-30")`. This command provides R with a column (in this case date) and tells to treat the numeric value as a date with an origin point. R understands the translation easy enough to make the rest of the analysis bug-free. 
+
+It is interesting to get a first hand idea of the data before any more profound analysis. 
+
+```{r}
+summary(oilvscop)
+tail(oilvscop, 20)
+names(oilvscop)
+```
+
+There are several things we can see right away from the data set.
+
+1. The data set had data ranging from September 1, 2014 all the way to September 2, 2015. This is exactly one year of devaluation crisis, but the author is making efforts to updating the information on a monthly basis, since it is a great data-set of financial history in the making and lends itself for further predictive model analysis. 
+2. The data includes the Forex (variable name given to the TRM or exchange rate, or value of the US dollar in Colombian pesos.) The exchange rate began the analysis at around COP 1,860 to reach its maximum price of COP 3,263 at the crisis worst point. 
+3. The price of the WTI barrel is included, its fluctuation going from USD 97.86 at its climax and dropping to USD 38.22 at the bottom. 
+4. The price of the Brent barrel is also included. It also fluctuates from USD 102.56 at its peak and dropping to USD 42.23 at its lowest point. The price of the Brent barrel was included at a later point of the correlation model when investigation on the subject turned out Colombian oil exports are determined more by Brent prices as opposed to WTI ones. 
+
+## Variation of International Oil Prices
+
+For a researcher, especially for a researcher of the fields of economy and international finances, understanding the core problem before attempting to explore the trend of the data and play with visualizations is foremost. But for Data Scientists with the power of R at their hands, visualizing data in the fly to study the problem is both more rewarding and simple. 
+
+How far did the prices of oil dropped in a mere 12 months? Every news channel in the US and elsewhere had probably already reported on this, but it makes interesting review one more time to better understand the overall picture. 
+
+First we will analyze the behavior of WTI prices in the period.
+
+```{r}
+ggplot(data=oilvscop, aes(x=date, y=wti, group=1)) + geom_line(color="gray") + labs(title="Fluctuation of WTI Oil Prices (per Barril)", x="Date Period", y="USD per Barril")
+```
+
+If fracking and shale oil was the innovation of the industry that changed it all, it certainly changed things for the worst for countries like Colombia, who now saw their income from exports of oil dropped from more than USD 100 a barrel to less than USD 45. 
+
+Given that Colombia oil exports are more affected by prices of Brent oil, the analysis of the trend of international prices is even more pressing.
+
+```{r}
+ggplot(data=oilvscop, aes(x=date, y=brent, group=1)) + geom_line(color="blue") + labs(title="Fluctuation of Brent Oil Prices (per Barril)", x="Date Period", y="USD per Barril")
+```
+
+The curves are very similar in trend. We can compare both in the same graph isolating the data sets for WTI and Brent oil prices and plotting them in the same graph. From a R point of view, one of the many possible ways is to use the melt command to group variable lines into the same plot (in this case the price fluctuations of WTI and Brent quotes.) 
+
+```{r}
+oilvscop_2 = oilvscop
+oilvscop_2$forex <- NULL
+oilvscop_2 <- melt(oilvscop_2, id="date")
+
+ggplot(data=oilvscop_2, aes(x=date, y=value, group=variable, colour=variable)) + geom_line() + labs(title="Evolution of WTI and Brent Oil Prices (per Barril)", x="Date Period", y="USD per Barril")
+```
+
+The two lines match-up in pattern a lot, if the price of Brent oil was ever significantly higher. For the remainder of the analysis, we will stop using the WTI price and focus solely on the price per barrel of Brent oil.
+
+## Fluctuation of the COP to USD Exchange Rate
+
+While the international price of oil kept falling, the exchange rate for the US dollar in Colombia started to rise, increasing the TRM as can be seen in the following chart.
+
+```{r}
+ggplot(data=oilvscop, aes(x=date, y=forex, group=1)) + geom_line(color="red") + labs(title="Evolution of the Colombian TRM", x="Date Period", y="COP per US dollar")
+```
+
+Fueled by falling prices of oil and diminished income from oil exports, the US currency became scarce and the Colombian peso started to devaluate comparatively against the dollar, left to float freely with no state intervention. 
+
+Why did the Colombia government left the dollar to float freely? There are many theories around the issue. 
+
+* When the Colombia economy was doing well because of the relatively high price of oil, the state did little to stop the appreciation of the COP, putting the blame on the weakness of the US economy and the Obama administration. It corresponded that in the same way it did not intervene when the US dollar was weak, it would not intervene now that the US dollar recovered part of its value. 
+* Some analyst think that free market forces were in action, with the Euro losing ground because of the European crisis at the same time (Greece having some part of the blame.) There was no mechanism for the Colombia government to break the rise of the US dollar nor the fall of the Colombian peso.
+* Yet many analysts affirm that the Colombian government had indeed intervened the market when the peso became too strong for the local industry to sustain exports, by large purchases executed through the Colombia National Bank. It became evident the state was willing to use the national reserves in favor of the exporters (including such politically well connected groups as the National Coffee Association) but not in favor of importers where it had little political leverage to gain. This much is true when coming to the realization President Santos is already in his second term and harbors no additional political future (under the current constitution he cannot be elected again.)
+
+Whatever the reasons behind the monetary policy, the charts show that the functions behind the falling prices of international oil and the rising TRM are indications of some of indirect relationship. 
+
+## Visualization and Mathematical Calculation of the Correlation
+
+The most succinct way to visualize a correlation between two variables is through a scatter plot, another task easily accomplished through the use of R and the ggplot2 library.
+
+```{r}
+ggplot(data=oilvscop, aes(brent, forex)) + geom_point(color="red") + labs(title="Correlation of Brent International Price and Colombian TRM", x="International Price Brent Oil (per Barril)", y="TRM Valuation (in COP)")
+```
+
+If not perfect, the visualization of both variables in a scatter plot point to an interesting correlation with a **strong negative trend**. The trend line is more evident if one were to take the data points below the U$70 per barrel mark. At that point in time, when Brent oil was selling at or less than U$70 per barrel, the market had already decided on the destiny and devaluation of the Colombian peso, accelerating its rise against the US dollar.
+
+We have mentioned that the plot visualization is that of a strong negative trend. But how strong? Using Pearson's Correlation formula, we can calculate:
+
+```{r}
+varcorr = cor(oilvscop$brent, oilvscop$forex)
+cat("Correlation result among Brent and COP: ", varcorr)
+```
+
+> If not perfect, the visualization of both variables in a scatter plot point to an interesting correlation with a **strong negative trend**. The result, a correlation value of -0.84, is a strong correlation indication and one that can give insights into constructing a predictive model with linear regression techniques should all variables remain the same.
+
+The result, a correlation value of -0.84, is a strong correlation indication and one that can give insights into constructing a predictive model with linear regression techniques should all variables remain the same. This is however unlikely, since the already evident inflation in imported goods has called the attention of the Colombian government, and some kind of intervention of the market, either through dirty flotation or similar devices, is sure to take effect soon. 
+
+A probable - and very simple - model to fit the correlation can be readily obtained through R if one wanted to saciate the curiosity.
+
+```{r}
+fit <- lm(oilvscop$brent ~ oilvscop$forex)
+fit
+summary(fit)
+```
+
+The t-values alone of the correlation are mathematical proof (at -25.16) that one can reject the null hypothesis (which we did not state here and will follow-up with more time and data to support the model) and accept that there is a clear model tieing both variables. 
+
+# CONCLUSION
+
+Given the availability of such incredible tools for mathematical analysis and prediction, coupled to the also available wealth of data floating freely in the Internet which makes gathering and exploring large sets of data a much simpler task, one is left to wonder if the Colombian government carefully studied the potential case for correlation of oil prices and the TRM, and the resulting inflation effect on the market and subsequent loss of purchasing power from the consumer. 
+
+We have shown the existance of a strong correlation between variables, so if the devaluation of the Colombian peso continues, it is not outrageous to think this is not by free design, but rather because policy makers have in mind a bigger plan that involves no intervention to the free flotation of the US dollar. 
+
+It is unlikely that the price of oil sees significant increases, not at least in the short term, with the looming threat of fracking techniques just around the corner to estabilize prices (usually towards the lower boundary.) Unless a new variable comes to play, for example a significant replacement for GDP income, the peso will continue to lose parity power against the US dollar, and the emergence of double-digit inflation, could very well be the result for a nation well-used to the availability of imported goods.
+
+**The following work is solely based for academic purposes and no claims are made as to the accuracy of the mathematical methods within.**
+
+Panama Republic, September 2015 | www.rpubs.com/ameilij | Realeased under Attribution-NonCommercial 3.0 Unported - Creative Commons
