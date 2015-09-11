@@ -5,25 +5,31 @@ date: "September 8, 2015"
 output: html_document
 ---
 
+******
+
 ### ABSTRACT
 The following analysis uses simple Data Science techniques to explore, analyze, and measure the relationship between the drop of international oil prices and the steep devaluation of the Colombian Peso against the US dollar between the months of September 2014 and October 2015.
 
 It has been a known fact by economist that such a relationship always existed since oil exports represent a large percentage of Colombian GDP. But the exact analysis and correlation of variables is little known. 
+
+![Oil drilling in Colombia](Colombian-Oil-Refinery.png)
 
 ### INTRODUCTION
 It was in August of 2014 that I first heard from several executives of the Colombian oil industry that the new techniques in fracking and the lower cost of shale oil drilling would have a tremendous impact on the capacity of the national oil industry to generate sales, thus kick starting the devaluation of the Colombian peso in lieu of the smaller influx of US dollars into the national reserves. 
 
 Despite having this knowledge, and despite warning many of my customers in the shoe industry, no one really saw the devaluation coming until the first days of February. Why? The US dollar usually had its peaks around the vacation period compromised between the second half of December and the third week of January. Used to years of a relatively cheap dollar currency, Colombian families would spend the year-end outside their country and demand a bigger quantity of US currency, only to return before February, when the peak would quiet and the Forex would return to normal. 
 
-But the currency exchange rate never returned to normal. Without the standard income from oil sales now affected by lower prices from shale oil and excess of reserves, Colombian traders began to find aggregate demand for US dollars in a market where the American currency began to grow scarce.
+But in 2015 the currency exchange rate never returned to normal. Without the usual income from oil sales, now affected by lower prices from shale oil and excess of reserves, Colombian traders began to find aggregate demand for US dollars in a market where the American currency began to grow scarce.
 
-For the athletic shoe industry this effect had negative implications. Customers who purchased and shipped goods prior to November 2014 and the Christmas season, began defaulting payments. Most of them had worked their cost accounting based on a US dollar trading between 1,850 to 1,900 pesos. When the debts matured around January and February 2015, customers preferred to speculate and default, with the intent of avoiding an exchange rate of COP 2,150 and working some sort of payment agreement when the exchanged declined. The exchange never declined, as the Colombian peso continued to devaluate in free fall. The Colombian government - anxious to please national exporters of coffee and other raw materials - purposely stated that would use no national reserves to avoid the exchange rate ascension. For President's Santos cash-strapped office, a higher currency exchange rate also meant more Colombian pesos per barrel of oil to meet an ever-increasing agenda of social and infrastructure programs. Up to date, the State has kept the same monetary policy position. 
+For the athletic shoe industry this effect had negative implications. Customers who purchased and shipped goods prior to November 2014 and the Christmas season, began defaulting payments. Most of them had worked their cost accounting based on a US dollar trading between 1,850 to 1,900 pesos. When the debts matured around January and February 2015, customers preferred to speculate and default, with the intent of avoiding an exchange rate of COP 2,150 and working some sort of payment agreement when the exchanged declined. 
 
-The athletic shoe industry took a severe impact from decreasing product importation into Colombia. Because of the Colombian peso devaluation, price adjusted goods now suffered a price increase relatively equivalent to the rise of the US dollar. When the devaluation reached the 50% mark, shoes were re-liquidated at the new currency level with price increments that were above what the consumer was used - or prepared - to pay. Some analyst predict that inflation will force the Colombian government to adjust minimum wages to compensate for consumers losing purchasing power. But political analysts doubt the amount of minimum wage adjustments will be even close to the level of devaluation and inflation of imported goods. 
+The exchange never declined and the Colombian peso continued to devaluate in free fall. The Colombian government - anxious to please national exporters of coffee and other raw materials - purposely stated that would use no national reserves to avoid the exchange rate ascension. For President's Santos cash-strapped office, a higher currency exchange rate probably meant more Colombian pesos per barrel of oil to meet an ever-increasing agenda of social and infrastructure programs. Up-to-date, the State has kept the same monetary policy position. 
+
+The athletic shoe industry took a severe blow from decreasing product importation into Colombia. Because of the Colombian peso devaluation, price adjusted goods now suffered a price increase relatively equivalent to the rise of the US dollar. When the devaluation reached the 50% mark, shoes were re-liquidated at the new currency level with price increments that were above what the consumer was used - or prepared - to pay. Some analyst predict that inflation will force the Colombian government to adjust minimum wages to compensate for consumers losing purchasing power. But political analysts doubt the amount of minimum wage adjustments will be even close to the level of devaluation and inflation of imported goods. 
 
 ### MEASURING CORRELATION OF INTERNATIONAL OIL PRICES TO THE EXCHANGE RATE OF THE COLOMBIAN PESO
 
-Everybody in the industry had a rough idea of the relationship between falling international oil prices and the currency peg. But nobody in the industry had actually measured mathematically said relationship, let alone establish some sort of predictive model to estimate future pricing of the Colombian Peso. The need to correctly measure such relationship corresponded to defend the position of our particular industry of reducing offer in light of diminishing demand. If the strategy would seem rather obvious, as in all things corporate, such reduction of offer would negatively affect volume forecasts for the years 2015 through 2017, something all executives were trying to avoid even if that meant refuting all but the most strict and mathematically based model. 
+Everybody in the industry had a rough idea of the relationship between falling international oil prices and the currency peg. But nobody in the industry had actually measured mathematically said relationship, let alone establish some sort of predictive model to estimate future pricing of the Colombian Peso. The need to correctly measure such relationship corresponded to defend the position of our particular company of reducing offer in light of diminishing demand. If the strategy would seem rather obvious, as in all things corporate, such reduction of offer would negatively affect volume forecasts for the years 2015 through 2017, something all executives were trying to avoid even if that meant refuting all but the most strict and mathematically based model. 
 
 ## Creating a Data Set for Measuring the Correlation
 
@@ -43,14 +49,13 @@ The first step towards the explorative data analysis of the information was read
 library(ggplot2)
 library(reshape2)
 library(Hmisc)
-library(dplyr)
 
 #setwd("/home/user/project/main")
 oilvscop = read.csv("oilvscop_wti_brent_numeric.csv")
 oilvscop$date <- as.Date(oilvscop$date, origin = "1899-12-30")
 ```
 
-It was mentioned before that the date values were probably the hardest part of putting together the data set. Information on quotes was scrapped from websites, and the resulting date formats did not play together well. A plethora of visualizations made little sense and the resulting charts were counter intuitive to the trained eye until the dates were finally corrected. The author found the best way to normalize dates was to export to Excel and then cast the dates into simple numeric format (i.e. turn 2014-09-01 to 41,883.) When exported to numeric format in such a way, it's much easier to read the file into an R data-frame with the syntax `oilvscop$date <- as.Date(oilvscop$date, origin = "1899-12-30")`. This command provides R with a column (in this case date) and tells to treat the numeric value as a date with an origin point. R understands the translation easy enough to make the rest of the analysis bug-free. 
+It was mentioned before that the date values were probably the hardest part of putting together the data set. Information on quotes was scrapped from websites, and the resulting date formats did not play together well. A plethora of visualizations made little sense and the resulting charts were counter intuitive to the trained eye until the dates were finally corrected. The author found the best way to normalize dates was to export to Excel and then cast the dates into simple numeric format (i.e. turn 2014-09-01 to 41,883.) When exported to numeric format in such a way, it's much easier to read the file into an R data-frame with the syntax `oilvscop$date <- as.Date(oilvscop$date, origin = "1899-12-30")`. This command provides R with a column (in this case date) and tells to treat the numeric value as a date with an origin point. R understands the translation easy enough to make the rest of the analysis hassle-free. 
 
 It is interesting to get a first hand idea of the data before any more profound analysis. 
 
@@ -148,7 +153,7 @@ summary(fit)
 
 The t-values alone of the correlation are mathematical proof (at -25.16) that one can reject the null hypothesis (which we did not state here and will follow-up with more time and data to support the model) and accept that there is a clear model tieing both variables. 
 
-# CONCLUSION
+### CONCLUSION
 
 Given the availability of such incredible tools for mathematical analysis and prediction, coupled to the also available wealth of data floating freely in the Internet which makes gathering and exploring large sets of data a much simpler task, one is left to wonder if the Colombian government carefully studied the potential case for correlation of oil prices and the TRM, and the resulting inflation effect on the market and subsequent loss of purchasing power from the consumer. 
 
